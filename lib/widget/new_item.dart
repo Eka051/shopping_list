@@ -36,12 +36,6 @@ class _NewItemState extends State<NewItem> {
           },
         ),
       );
-      Navigator.of(context).pop(GroceryItem(
-        id: DateTime.now().toString(),
-        name: _enteredName,
-        quantity: _enteredQuantity,
-        category: _selectedCategory,
-      ));
     }
   }
 
