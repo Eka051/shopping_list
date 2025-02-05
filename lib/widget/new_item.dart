@@ -37,11 +37,19 @@ class _NewItemState extends State<NewItem> {
         ),
       );
 
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+
       if (!context.mounted) {
         return;
       }
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: responseBody['name'],
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory,
+        ),
+      );
     }
   }
 
