@@ -30,7 +30,8 @@ class _GroceryListState extends State<GroceryList> {
 
     if (response.statusCode >= 400) {
       setState(() {
-        _error = 'An error occurred: ${response.reasonPhrase}';
+        _error =
+            'Error: ${response.statusCode} ${response.reasonPhrase}. \nFailed to fetch data. Please try again later.';
         _isLoading = false;
       });
       return;
@@ -132,7 +133,18 @@ class _GroceryListState extends State<GroceryList> {
 
     if (_error != null) {
       content = Center(
-        child: Text(_error!),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        Text(
+          _error!,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+          fontSize: 16,
+          ),
+        ),
+        ],
+      ),
       );
     }
 
