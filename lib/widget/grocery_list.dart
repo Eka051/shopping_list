@@ -37,6 +37,13 @@ class _GroceryListState extends State<GroceryList> {
       return;
     }
 
+    if (response.body == 'null') {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItemsList = [];
     for (final item in listData.entries) {
@@ -79,13 +86,24 @@ class _GroceryListState extends State<GroceryList> {
     _loadItems();
   }
 
-  void _removeItem(GroceryItem item) {
-    final url = Uri.https('shopping-list-9a1d9-default-rtdb.firebaseio.com',
-        'shopping-list/${item.id}.json');
-    http.delete(url);
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
+
     setState(() {
       _groceryItems.remove(item);
     });
+
+    final url = Uri.https('shopping-list-9a1d9-default-rtdb.firebaseio.com',
+        'shopping-list/${item.id}.json');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+      return;
+    }
   }
 
   @override
@@ -136,18 +154,18 @@ class _GroceryListState extends State<GroceryList> {
 
     if (_error != null) {
       content = Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-        Text(
-          _error!,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-          fontSize: 16,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _error!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
-        ],
-      ),
       );
     }
 
