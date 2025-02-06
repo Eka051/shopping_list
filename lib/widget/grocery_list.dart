@@ -94,6 +94,10 @@ class _GroceryListState extends State<GroceryList> {
       });
       return;
     }
+
+    setState(() {
+      _loadedItems = _loadItems();
+    });
   }
 
   @override
@@ -141,11 +145,13 @@ class _GroceryListState extends State<GroceryList> {
             );
           }
 
+          _groceryItems = snapshot.data as List<GroceryItem>;
+
           return ListView.builder(
-        itemCount: snapshot.data!.length,
+        itemCount: _groceryItems.length,
         itemBuilder: (ctx, index) => Dismissible(
           onDismissed: (direction) {
-            _removeItem(snapshot.data![index]);
+            _removeItem(_groceryItems[index]);
           },
           direction: DismissDirection.horizontal,
           background: Container(
@@ -160,15 +166,15 @@ class _GroceryListState extends State<GroceryList> {
             padding: const EdgeInsets.only(right: 16),
             child: const Icon(Icons.delete, color: Colors.white),
           ),
-          key: ValueKey(snapshot.data![index].id),
+          key: ValueKey(_groceryItems[index].id),
           child: ListTile(
-            title: Text(snapshot.data![index].name),
+            title: Text(_groceryItems[index].name),
             leading: Container(
               width: 24,
               height: 24,
-              color: snapshot.data![index].category.color,
+              color: _groceryItems[index].category.color,
             ),
-            trailing: Text(snapshot.data![index].quantity.toString()),
+            trailing: Text(_groceryItems[index].quantity.toString()),
           ),
         ),
       );
